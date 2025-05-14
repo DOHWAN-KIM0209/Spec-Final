@@ -45,12 +45,13 @@ export const postSignup = async ({ email, password, name }: IPostJoinReq): Promi
 
 export const postLogin = async ({ email, password }: IPostLoginReq): Promise<APIResponse<IPostLoginRes>> => {
   const res = await axiosCommonInstance.post('/api/auth/login', {
-    email: email,
-    password: password,
+    email,
+    password,
   });
 
-  if (res.status === 200 && res.headers.authorization) {
-    localStorage.setItem('SPEC_ACCESS_TOKEN', res.headers.authorization.replace('Bearer ', ''));
+  // ✅ 백엔드에서 응답 body에 token이 있음
+  if (res.status === 200 && res.data.token) {
+    localStorage.setItem('SPEC_ACCESS_TOKEN', res.data.token); // ✅ 여기에 저장
   }
 
   return res.data;
