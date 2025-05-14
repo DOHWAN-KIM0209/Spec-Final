@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: railway
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./apps/backend
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: mysql://root:IxgyKuakbjLgSwgSoKXaxQNHVcIYhBHb@interchange.proxy.rlwy.net:10370/railway
+      BASE_URL: https://spec-total-production.up.railway.app
+      KAKAO_CLIENT_ID: bdea6bd2590b924fe585900eee2c5d2c
+      KAKAO_REDIRECT_URI: http://spec-total-production.up.railway.app/auth/kakao/callback
+      PORT: 4000
+    depends_on:
+      - mysql
+
+  web:
+    build:
+      context: ./apps/web
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: https://spec-total-production.up.railway.app
+      VITE_KAKAO_REST_API_KEY: bdea6bd2590b924fe585900eee2c5d2c
+      VITE_KAKAO_REDIRECT_URI: http://spec-total-production.up.railway.app/oauth/kakao
+      VITE_NODE_ENV: development
+    depends_on:
+      - backend
+
+  web-ai:
+    build:
+      context: ./apps/web-ai
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
