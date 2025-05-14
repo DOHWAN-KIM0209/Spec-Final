@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 
 import authRoutes from './src/routes/auth';
 import questionRoutes from './src/routes/question';
@@ -48,12 +49,15 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // ✅ 프론트엔드 정적 파일 서빙 (Vite 빌드 결과)
 const frontendPath = path.join(__dirname, '../../web/dist');
-app.use(express.static(frontendPath));
 
-// ✅ SPA 대응: 위 라우터와 정적 경로를 제외한 모든 요청은 index.html 응답
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
-});
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+
+  // ✅ SPA 대응: 위 라우터와 정적 경로를 제외한 모든 요청은 index.html 응답
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
 
 // ✅ Swagger 설정
 setupSwagger(app);
