@@ -1,26 +1,30 @@
-# Node.js 18.18 이상으로 설정 (Prisma 요구사항)
-FROM node:18.18-alpine
+# 1단계: 빌드 스테이지
+FROM node:18.18-alpine AS builder
 
-# 작업 디렉토리 설정
 WORKDIR /app
 
-# package.json과 lock 파일 먼저 복사 → 캐시 활용
-COPY package*.json ./
-
 # 의존성 설치
+COPY package*.json ./
 RUN npm install --production
 
-# 🔥 prisma 스키마를 명시적으로 복사
+# Prisma 스키마 복사 및 Client 생성
 COPY prisma ./prisma
-
-# 나머지 소스 복사
-COPY . .
-
-# Prisma client 생성
 RUN npx prisma generate
 
-# 앱 빌드 (NestJS면 build 스크립트 포함 전제)
+# 애플리케이션 소스 복사 및 빌드
+COPY . .
 RUN npm run build
 
-# 앱 실행
+# 2단계: 실행 스테이지
+FROM node:18.18-alpine
+
+WORKDIR /app
+
+# 빌드된 파일과 node_modules 복사
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY package*.json ./
+
+# 애플리케이션 실행
 CMD ["npm", "start"]
