@@ -1,6 +1,7 @@
 # Node
 node_modules/
 # dist/
+/Spec-Final/apps/backend/dist/
 .env
 
 # Logs
