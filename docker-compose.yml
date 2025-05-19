@@ -5,10 +5,15 @@ services:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: railway
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -16,26 +21,28 @@ services:
     ports:
       - "4000:4000"
     environment:
-      DATABASE_URL: mysql://root:IxgyKuakbjLgSwgSoKXaxQNHVcIYhBHb@interchange.proxy.rlwy.net:10370/railway
-      BASE_URL: https://spec-total-production.up.railway.app
-      KAKAO_CLIENT_ID: bdea6bd2590b924fe585900eee2c5d2c
-      KAKAO_REDIRECT_URI: http://spec-total-production.up.railway.app/auth/kakao/callback
+      DATABASE_URL: ${DATABASE_URL}
+      BASE_URL: ${BASE_URL}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
+      KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
       PORT: 4000
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   web:
     build:
       context: ./apps/web
     ports:
-      - "5173:5173"
+      - "80:80"  # 프로덕션 Nginx 정적서버 가정
     environment:
-      VITE_API_URL: https://spec-total-production.up.railway.app
-      VITE_KAKAO_REST_API_KEY: bdea6bd2590b924fe585900eee2c5d2c
-      VITE_KAKAO_REDIRECT_URI: http://spec-total-production.up.railway.app/oauth/kakao
-      VITE_NODE_ENV: development
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_KAKAO_REST_API_KEY: ${VITE_KAKAO_REST_API_KEY}
+      VITE_KAKAO_REDIRECT_URI: ${VITE_KAKAO_REDIRECT_URI}
+      VITE_NODE_ENV: production
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
   web-ai:
     build:
@@ -43,4 +50,5 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
