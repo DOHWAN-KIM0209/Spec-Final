@@ -53,10 +53,9 @@ router.post('/', upload.fields([
     { name: 'video', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 },
 ]), (req, res) => {
-    var _a, _b;
     const files = req.files;
-    const video = (_a = files['video']) === null || _a === void 0 ? void 0 : _a[0];
-    const thumbnail = (_b = files['thumbnail']) === null || _b === void 0 ? void 0 : _b[0];
+    const video = files['video']?.[0];
+    const thumbnail = files['thumbnail']?.[0];
     res.json({
         videoPath: video ? `/uploads/${video.filename}` : null,
         thumbnailPath: thumbnail ? `/uploads/${thumbnail.filename}` : null,

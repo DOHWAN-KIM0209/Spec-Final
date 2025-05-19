@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -60,9 +51,9 @@ const prisma = new client_1.PrismaClient();
  *       200:
  *         description: 등록된 스크립트 반환
  */
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/', async (req, res) => {
     try {
-        const scripts = yield prisma.commonScript.findMany({
+        const scripts = await prisma.commonScript.findMany({
             include: {
                 user: { select: { id: true, name: true } },
                 question: { select: { id: true, question: true } },
@@ -74,12 +65,12 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (err) {
         res.status(500).json({ error: '스크립트 조회 실패' });
     }
-}));
+});
 // 공통 스크립트 등록
-router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/', async (req, res) => {
     try {
         const { userId, questionId, script } = req.body;
-        const created = yield prisma.commonScript.create({
+        const created = await prisma.commonScript.create({
             data: {
                 userId: BigInt(userId),
                 questionId: BigInt(questionId),
@@ -91,5 +82,5 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (err) {
         res.status(500).json({ error: '스크립트 등록 실패' });
     }
-}));
+});
 exports.default = router;

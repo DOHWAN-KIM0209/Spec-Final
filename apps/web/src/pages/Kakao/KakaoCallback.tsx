@@ -8,9 +8,14 @@ const KakaoCallback = () => {
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get('code');
-    if (!code) return;
+    if (!code) {
+      Toast.error('인가 코드가 없습니다.');
+      navigate('/login');
+      return;
+    }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/auth/kakao`, { code })
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/auth/kakao`, { code })
       .then(res => {
         localStorage.setItem('SPEC_ACCESS_TOKEN', res.data.token);
         Toast.success('카카오 로그인 성공!');
@@ -20,7 +25,7 @@ const KakaoCallback = () => {
         Toast.error('카카오 로그인 실패');
         navigate('/login');
       });
-  }, []);
+  }, [navigate]);
 
   return <div className="text-center mt-20 text-xl">카카오 로그인 중입니다...</div>;
 };

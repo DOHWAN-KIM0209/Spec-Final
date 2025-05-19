@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { IconType } from 'react-icons';
 import { CgFileDocument } from 'react-icons/cg';
-import { LuMinusCircle, LuPlusCircle } from 'react-icons/lu';
+import { LuMinus, LuPlus } from 'react-icons/lu';
 
 interface IAccordianProps {
   titleContent: string | React.ReactNode;
@@ -106,14 +106,14 @@ const Accordian = ({
         <div className={`flex items-center ${textColor} ${textSize} ${textWeight} ${titleHeight}`} ref={titleRef}>
           {hasIcons &&
             (isSelected ? (
-              <LuMinusCircle
+              <LuMinus
                 size="35"
                 className="flex-shrink-0 mr-2 p-1 pl-0"
                 color={iconOpenColor}
                 onClick={handleMinusClick}
               />
             ) : (
-              <LuPlusCircle
+              <LuPlus
                 size="35"
                 className="flex-shrink-0 mr-2 p-1 pl-0"
                 color={iconCloseColor}

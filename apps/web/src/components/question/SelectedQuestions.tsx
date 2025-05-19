@@ -1,6 +1,6 @@
 import questionStore from '@/stores/questionStore';
 import { getCurrentTime } from '@/utils/getCurrentTime';
-import { LuMinusCircle } from 'react-icons/lu';
+import { LuMinus } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import Button from '../@common/Button/Button';
 
@@ -19,7 +19,7 @@ const SelectedQuestions = () => {
               key={questionObj.id}
               className={`p-3 my-3 cursor-pointer box-content drop-shadow-lg bg-white rounded-xl flex items-center`}
             >
-              <LuMinusCircle
+              <LuMinus
                 size="35"
                 className="flex-shrink-0 mr-2 p-1 pl-0 text-[#EA8888]"
                 onClick={() => removeQuestion(questionObj.id!)}

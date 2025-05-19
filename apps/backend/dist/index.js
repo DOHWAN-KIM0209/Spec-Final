@@ -46,7 +46,7 @@ app.use('/upload-analysis', uploadAnalysis_1.default);
 app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
 app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'public')));
 // ✅ 프론트엔드 정적 파일 서빙 (Vite 빌드 결과)
-const frontendPath = path_1.default.join(__dirname, '../../web/dist');
+const frontendPath = path_1.default.join('/apps/web/dist');
 if (fs_1.default.existsSync(frontendPath)) {
     app.use(express_1.default.static(frontendPath));
     // ✅ SPA 대응: 위 라우터와 정적 경로를 제외한 모든 요청은 index.html 응답

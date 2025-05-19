@@ -1,21 +1,12 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserScripts = exports.createScript = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const createScript = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createScript = async (req, res) => {
     const { userId, questionId, script } = req.body;
     try {
-        const created = yield prisma.commonScript.create({
+        const created = await prisma.commonScript.create({
             data: {
                 userId,
                 questionId,
@@ -27,16 +18,16 @@ const createScript = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (err) {
         res.status(400).json({ error: '스크립트 저장 실패', details: err });
     }
-});
+};
 exports.createScript = createScript;
-const getUserScripts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserScripts = async (req, res) => {
     const userId = Number(req.params.userId);
-    const scripts = yield prisma.commonScript.findMany({
+    const scripts = await prisma.commonScript.findMany({
         where: { userId },
         include: {
             question: true,
         },
     });
     res.json(scripts);
-});
+};
 exports.getUserScripts = getUserScripts;
