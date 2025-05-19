@@ -1,19 +1,19 @@
-# Node.js 18.18 이상 버전으로 변경
 FROM node:18.18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-
 # 의존성 설치
+COPY package*.json ./
 RUN npm install --production
 
+# 앱 소스 복사 + prisma 폴더 복사
 COPY . .
+COPY prisma ./prisma
 
-# prisma client generate가 필요한 경우
+# Prisma Client 생성
 RUN npx prisma generate
 
-# 빌드 스크립트가 필요한 경우만
+# 빌드가 필요하다면
 RUN npm run build
 
 ENV PORT=4000
