@@ -2,18 +2,16 @@ FROM node:18.18-alpine
 
 WORKDIR /app
 
-# 의존성 설치
 COPY package*.json ./
 RUN npm install --production
 
-# 앱 소스 복사 + prisma 폴더 복사
-COPY . .
+# prisma 디렉토리 반드시 복사
 COPY prisma ./prisma
 
-# Prisma Client 생성
-RUN npx prisma generate
+# 전체 소스 복사 (prisma 이후)
+COPY . .
 
-# 빌드가 필요하다면
+RUN npx prisma generate
 RUN npm run build
 
 ENV PORT=4000
