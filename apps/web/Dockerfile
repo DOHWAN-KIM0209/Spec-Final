@@ -3,7 +3,7 @@ FROM node:18 AS builder
 WORKDIR /app
 
 # 의존성 설치
-COPY apps/web/package*.json ./
+COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
 # 소스 복사
