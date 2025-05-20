@@ -24,7 +24,7 @@ const uploadAnalysis_1 = __importDefault(require("./src/routes/uploadAnalysis"))
 const swagger_1 = require("./swagger");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT) || 8080;
 const BASE_URL = process.env.BASE_URL || `https://${process.env.RAILWAY_STATIC_URL || 'localhost:4000'}`;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());

@@ -22,7 +22,7 @@ import { setupSwagger } from './swagger';
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT) || 8080;
 const BASE_URL = process.env.BASE_URL || `https://${process.env.RAILWAY_STATIC_URL || 'localhost:4000'}`;
 
 app.use(cors());
