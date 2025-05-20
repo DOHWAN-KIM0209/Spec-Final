@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y libquadmath0 libgomp1 && \
     pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --without dev,ai
+    poetry install --without dev,ai --no-root
 
 COPY . .
 
