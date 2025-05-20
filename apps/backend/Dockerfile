@@ -8,6 +8,8 @@ COPY tsconfig.json ./
 COPY prisma ./prisma
 COPY src ./src
 
+COPY . .
+
 RUN npm install
 RUN npx tsc
 
@@ -19,5 +21,7 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
+
+COPY . .
 
 CMD ["node", "index.js"]
