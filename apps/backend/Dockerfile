@@ -1,18 +1,20 @@
+# 예: apps/backend/Dockerfile
+
 # --- 1단계: Build ---
 FROM node:18 AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY tsconfig.json ./
-COPY prisma ./prisma
-COPY src ./src
+# 필요한 파일 복사 (루트 기준 상대 경로)
+COPY apps/backend/package*.json ./
+COPY apps/backend/tsconfig.json ./
+COPY apps/backend/prisma ./prisma
+COPY apps/backend/src ./src
+
+# ✅ 프론트엔드 정적 파일 포함하고 싶다면
 COPY apps/web ./apps/web
 
-COPY . .
-
 RUN npm install
-RUN npm run build --workspace=web
 RUN npx tsc
 
 # --- 2단계: Runtime ---
@@ -22,9 +24,9 @@ WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/apps/web/dist ./apps/web/dist   
+COPY apps/backend/package*.json ./
 
-COPY . .
+# ✅ 프론트 dist도 같이 옮기고 싶다면
+COPY --from=builder /app/apps/web/dist ./apps/web/dist
 
 CMD ["node", "dist/index.js"]
