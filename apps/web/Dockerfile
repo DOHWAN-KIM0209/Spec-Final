@@ -2,7 +2,7 @@
 FROM node:18 AS builder
 WORKDIR /app
 COPY . .
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build  # 👉 dist 폴더 생성
 
 # 2단계: Nginx에 복사
