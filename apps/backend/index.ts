@@ -48,7 +48,7 @@ app.use('/api/analyses', analysisRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/upload-analysis', uploadAnalysisRouter);
 
-// ✅ 기존 정적 파일
+// ✅ 기존 정적 파일!
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
