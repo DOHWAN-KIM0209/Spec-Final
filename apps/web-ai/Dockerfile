@@ -1,7 +1,6 @@
 FROM python:3.11-slim AS builder
 
 ENV PYTHONUNBUFFERED=1
-
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
@@ -12,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y libquadmath0 libgomp1 && \
     pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-dev
+    poetry install --only main
 
 COPY . .
 
