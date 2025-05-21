@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 
 import authRoutes from './src/routes/auth';
+import emailRouter from './src/routes/email';
 import questionRoutes from './src/routes/question';
 import scriptRoutes from './src/routes/script';
 import resumeRoutes from './src/routes/resume';
@@ -32,19 +33,20 @@ app.use(cors({
 app.use(express.json());
 
 // ✅ API 라우터
-app.use('/auth', authRoutes);
-app.use('/questions', questionRoutes);
-app.use('/scripts', scriptRoutes);
-app.use('/resumes', resumeRoutes);
-app.use('/common-questions', commonQuestionRouter);
-app.use('/common-scripts', commonScriptRouter);
-app.use('/common-keywords', commonKeywordRouter);
-app.use('/resume-questions', resumeQuestionRouter);
-app.use('/resume-scripts', resumeScriptRouter);
-app.use('/resume-keywords', resumeKeywordRouter);
-app.use('/analyses', analysisRouter);
-app.use('/upload', uploadRouter);
-app.use('/upload-analysis', uploadAnalysisRouter);
+app.use('/api/auth', authRoutes);
+app.use('/api/email', emailRouter);
+app.use('/api/questions', questionRoutes);
+app.use('/api/scripts', scriptRoutes);
+app.use('/api/resumes', resumeRoutes);
+app.use('/api/common-questions', commonQuestionRouter);
+app.use('/api/common-scripts', commonScriptRouter);
+app.use('/api/common-keywords', commonKeywordRouter);
+app.use('/api/resume-questions', resumeQuestionRouter);
+app.use('/api/resume-scripts', resumeScriptRouter);
+app.use('/api/resume-keywords', resumeKeywordRouter);
+app.use('/api/analyses', analysisRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/api/upload-analysis', uploadAnalysisRouter);
 
 // ✅ 기존 정적 파일
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
