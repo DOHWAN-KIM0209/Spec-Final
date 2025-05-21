@@ -35,7 +35,7 @@ export const postVerifyEmail = async ({
 };
 
 export const postSignup = async ({ email, password, name }: IPostJoinReq): Promise<APIResponse<IPostJoinRes>> => {
-  const res = await axiosCommonInstance.post('/api/auth/join', {
+  const res = await axiosCommonInstance.post('/api/auth/signup', {
     email: email,
     password: password,
     name: name,

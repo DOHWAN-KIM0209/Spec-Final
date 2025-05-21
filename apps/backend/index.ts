@@ -53,16 +53,16 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // ✅ 프론트엔드 정적 파일 서빙 (Vite 빌드 결과)
-const frontendPath = path.join(__dirname, '..', 'web', 'dist');
+// const frontendPath = path.join(__dirname, '..', 'web', 'dist');
 
-if (fs.existsSync(frontendPath)) {
-  app.use(express.static(frontendPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-} else {
-  console.warn('❌ Frontend dist not found at:', frontendPath);
-}
+// if (fs.existsSync(frontendPath)) {
+//   app.use(express.static(frontendPath));
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(frontendPath, 'index.html'));
+//   });
+// } else {
+//   console.warn('❌ Frontend dist not found at:', frontendPath);
+// }
 
 // ✅ Swagger 설정
 setupSwagger(app);
