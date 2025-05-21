@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y libquadmath0 libgomp1 && \
     pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --only main
+    poetry install --no-interaction --no-ansi
 
 COPY . .
 
@@ -19,15 +19,14 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-ENV POETRY_SITE_PACKAGES=/usr/local/lib/python3.11/site-packages \
-    POETRY_REQUESTS_TIMEOUT=120
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/root/.local/bin:$PATH"
 
-COPY --from=builder $POETRY_SITE_PACKAGES $POETRY_SITE_PACKAGES
-COPY --from=builder /usr/local/bin/poetry /usr/local/bin/poetry
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
 COPY --from=builder /app /app
 
-RUN poetry config virtualenvs.create false && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y libquadmath0 libgomp1 libgl1-mesa-glx libglib2.0-0 ffmpeg
 
-CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
