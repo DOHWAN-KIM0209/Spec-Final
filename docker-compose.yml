@@ -1,54 +1,61 @@
 version: '3.9'
 
 services:
-  mysql:
-    image: mysql:8
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: railway
+  nginx:
+    image: nginx:latest
     ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - backend
+      - web-ai
+
+  # postgres:
+  #  image: postgres:15
+  #  restart: always
+  #  environment:
+  #    POSTGRES_USER: ${POSTGRES_USER}
+  #    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #    POSTGRES_DB: railway
+  #  ports:
+  #    - "5432:5432"
+  #  healthcheck:
+  #    test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 5
 
   backend:
     build:
       context: ./apps/backend
-    ports:
-      - "4000:4000"
+    expose:
+      - "4000"
     environment:
+      PORT: 4000
       DATABASE_URL: ${DATABASE_URL}
       BASE_URL: ${BASE_URL}
       KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
       KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
-      PORT: 4000
-    depends_on:
-      mysql:
-        condition: service_healthy
 
   web:
     build:
       context: ./apps/web
-    ports:
-      - "80:80"  # 프로덕션 Nginx 정적서버 가정
+    expose:
+      - "80"
     environment:
-      VITE_API_URL: ${VITE_API_URL}
+      VITE_API_URL: "/api"
       VITE_KAKAO_REST_API_KEY: ${VITE_KAKAO_REST_API_KEY}
       VITE_KAKAO_REDIRECT_URI: ${VITE_KAKAO_REDIRECT_URI}
       VITE_NODE_ENV: production
     depends_on:
-      backend:
-        condition: service_started
+      - backend
 
   web-ai:
     build:
       context: ./apps/web-ai
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
-      backend:
-        condition: service_started
+      - backend

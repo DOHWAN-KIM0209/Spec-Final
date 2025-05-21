@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y libquadmath0 libgomp1 && \
     pip install poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --without dev,ai --no-root
+    poetry install --no-dev
 
 COPY . .
 
@@ -30,3 +30,5 @@ COPY --from=builder /app /app
 RUN poetry config virtualenvs.create false && \
     apt-get update && \
     apt-get install -y libquadmath0 libgomp1 libgl1-mesa-glx libglib2.0-0 ffmpeg
+
+CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
