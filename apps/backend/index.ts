@@ -25,7 +25,10 @@ const app = express();
 const PORT = Number(process.env.PORT) || 4000;
 const BASE_URL = process.env.BASE_URL || `https://${process.env.RAILWAY_STATIC_URL || 'localhost:4000'}`;
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://spec-web-production.up.railway.app'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // ✅ API 라우터
