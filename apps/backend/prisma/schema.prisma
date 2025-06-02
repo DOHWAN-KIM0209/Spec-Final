@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id              BigInt           @id @default(autoincrement())
+  role            String
+  email           String           @unique
+  password        String
+  name            String
+  profileImage    String?
+  deletedTime     DateTime?
+  createdTime     DateTime         @default(now())
+  updatedTime     DateTime?
+  analyses        Analysis[]
+  commonKeywords  CommonKeyword[]
+  commonScripts   CommonScript[]
+  resumes         Resume[]
+  resumeKeywords  ResumeKeyword[]
+  resumeQuestions ResumeQuestion[]
+  resumeScripts   ResumeScript[]
+  socials         Social[]
+}
+
+model Resume {
+  id              BigInt           @id @default(autoincrement())
+  userId          BigInt
+  name            String
+  filePath        String
+  createdTime     DateTime         @default(now())
+  updatedTime     DateTime?
+  user            User             @relation(fields: [userId], references: [id])
+  keywords        ResumeKeyword[]
+  resumeQuestions ResumeQuestion[]
+  scripts         ResumeScript[]
+}
+
+model ResumeQuestion {
+  id          BigInt    @id @default(autoincrement())
+  resumeId    BigInt
+  question    String
+  createdTime DateTime  @default(now())
+  updatedTime DateTime?
+
+  resume      Resume    @relation(fields: [resumeId], references: [id], map: "ResumeQuestionToResume")
+  userId      BigInt
+  user        User      @relation(fields: [userId], references: [id]) // ✅ 추가
+}
+
+model ResumeScript {
+  id          BigInt    @id @default(autoincrement())
+  userId      BigInt
+  questionId  BigInt
+  resumeId    BigInt
+  script      String
+  createdTime DateTime  @default(now())
+  updatedTime DateTime?
+  resume      Resume    @relation(fields: [resumeId], references: [id], map: "ResumeScriptToResume")
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model ResumeKeyword {
+  id          BigInt    @id @default(autoincrement())
+  userId      BigInt
+  questionId  BigInt
+  resumeId    BigInt
+  keyword     String
+  createdTime DateTime  @default(now())
+  updatedTime DateTime?
+  resume      Resume    @relation(fields: [resumeId], references: [id], map: "ResumeKeywordToResume")
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model CommonCategory {
+  id          BigInt           @id @default(autoincrement())
+  category    String           @unique
+  createdTime DateTime         @default(now())
+  updatedTime DateTime?
+  questions   CommonQuestion[]
+}
+
+model CommonQuestion {
+  id          BigInt          @id @default(autoincrement())
+  categoryId  BigInt
+  question    String
+  createdTime DateTime        @default(now())
+  updatedTime DateTime?
+  keywords    CommonKeyword[]
+  category    CommonCategory  @relation(fields: [categoryId], references: [id])
+  scripts     CommonScript[]
+}
+
+model CommonScript {
+  id          BigInt         @id @default(autoincrement())
+  userId      BigInt
+  questionId  BigInt
+  script      String
+  createdTime DateTime       @default(now())
+  updatedTime DateTime?
+  question    CommonQuestion @relation(fields: [questionId], references: [id])
+  user        User           @relation(fields: [userId], references: [id])
+}
+
+model CommonKeyword {
+  id          BigInt         @id @default(autoincrement())
+  userId      BigInt
+  questionId  BigInt
+  keyword     String
+  createdTime DateTime       @default(now())
+  updatedTime DateTime?
+  question    CommonQuestion @relation(fields: [questionId], references: [id])
+  user        User           @relation(fields: [userId], references: [id])
+}
+
+model Analysis {
+  id                BigInt    @id @default(autoincrement())
+  userId            BigInt
+  type              String
+  question          String
+  videoPath         String
+  thumbnailPath     String
+  keyword           String
+  setStartTime      DateTime
+  analysisReqTime   DateTime  @default(now())
+  analysisStartTime DateTime
+  analysisEndTime   DateTime?
+  user              User      @relation(fields: [userId], references: [id])
+}
+
+model Social {
+  id         BigInt @id @default(autoincrement())
+  provider   String
+  providerId BigInt
+  userId     BigInt
+  user       User   @relation(fields: [userId], references: [id])
+}
